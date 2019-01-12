@@ -10,7 +10,7 @@ To Check splatoon2 battle stages and rules.
 
 ### Options
 
-#### `-n`, `--next`
+- `-n`, `--next`
 
 To show terms stages and rules
 
