@@ -30,6 +30,8 @@ $ 2019/01/12 15:00 ~ 2019/01/12 17:00
 
 This DateTime is JST.
 
+![example.giff](https://raw.githubusercontent.com/YutaGoto/ika2cli/master/example.gif)
+
 ## Note
 
 This command is NOT related to Nintendo Co., Ltd.
