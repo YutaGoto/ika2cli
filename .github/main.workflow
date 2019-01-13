@@ -1,6 +1,12 @@
 workflow "main" {
   on = "push"
-  resolves = ["lint"]
+  resolves = ["test"]
+}
+
+action "test" {
+  needs = ["lint"]
+  uses = "./.github/actions/golang"
+  args = "test"
 }
 
 action "lint" {
