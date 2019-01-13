@@ -13,7 +13,6 @@ import (
 type Ika struct {
 	Result struct {
 		Regular []struct {
-			Rule   string   `json:"rule"`
 			Maps   []string `json:"maps"`
 			StartT int64    `json:"start_t"`
 			EndT   int64    `json:"end_t"`
@@ -71,5 +70,8 @@ func main() {
 		},
 	}
 
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
