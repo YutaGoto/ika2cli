@@ -15,3 +15,9 @@ if [[ "$1" == "lint" ]]; then
     golangci-lint --version
     golangci-lint run --enable-all --disable gochecknoglobals --disable gochecknoinits
 fi
+
+if [[ "$1" == "test" ]]; then
+    echo "#######################"
+    echo "# Running Test"
+    go test ./... -race
+fi
