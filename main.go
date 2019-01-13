@@ -55,11 +55,18 @@ func main() {
 			panic(err)
 		}
 
-		var datetime_layout = "2006/01/02 15:04"
-		fmt.Println(time.Unix(ika.Result.Regular[term].StartT, 0).Format(datetime_layout) + " ~ " + time.Unix(ika.Result.Regular[term].EndT, 0).Format(datetime_layout))
-		fmt.Println(strings.Join([]string{"ナワバリバトル", ", ステージ:", strings.Join(ika.Result.Regular[term].Maps, " ")}, ""))
-		fmt.Println(strings.Join([]string{"ガチマッチ:", ika.Result.Gachi[term].Rule, ", ステージ:", strings.Join(ika.Result.Gachi[term].Maps, " ")}, ""))
-		fmt.Println(strings.Join([]string{"リーグマッチ:", ika.Result.League[term].Rule, ", ステージ:", strings.Join(ika.Result.League[term].Maps, " ")}, ""))
+		var datetimeLayout = "2006/01/02 15:04"
+		var startAt = time.Unix(ika.Result.Regular[term].StartT, 0).Format(datetimeLayout)
+		var endAt = time.Unix(ika.Result.Regular[term].EndT, 0).Format(datetimeLayout)
+		var regularMaps = strings.Join(ika.Result.Regular[term].Maps, " ")
+		var rankedBattoleRule = ika.Result.Gachi[term].Rule
+		var rankedBattoleMaps = strings.Join(ika.Result.Gachi[term].Maps, " ")
+		var leagueBattleRule = ika.Result.League[term].Rule
+		var leagueBattleMaps = strings.Join(ika.Result.League[term].Maps, " ")
+		fmt.Println(startAt + " ~ " + endAt)
+		fmt.Println(strings.Join([]string{"ナワバリバトル", ", ステージ:", regularMaps}, ""))
+		fmt.Println(strings.Join([]string{"ガチマッチ:", rankedBattoleRule, ", ステージ:", rankedBattoleMaps}, ""))
+		fmt.Println(strings.Join([]string{"リーグマッチ:", leagueBattleRule, ", ステージ:", leagueBattleMaps}, ""))
 		return nil
 	}
 
@@ -72,6 +79,6 @@ func main() {
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 }
