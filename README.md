@@ -1,5 +1,7 @@
 # ika2cli
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/897b37819dc7423297152315d6e4f021)](https://app.codacy.com/app/YutaGoto/ika2cli?utm_source=github.com&utm_medium=referral&utm_content=YutaGoto/ika2cli&utm_campaign=Badge_Grade_Dashboard)
+
 ## Usage
 
 The following command available.
