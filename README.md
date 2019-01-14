@@ -4,8 +4,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d24185811973486b9015548a8ca9fc7f)](https://www.codacy.com/app/YutaGoto/ika2cli?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=YutaGoto/ika2cli&amp;utm_campaign=Badge_Grade)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ace630bf6b66a592179f/maintainability)](https://codeclimate.com/github/YutaGoto/ika2cli/maintainability)
 
-
-
 ## Usage
 
 The following command available.
