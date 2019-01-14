@@ -11,3 +11,7 @@ jobs:
       - checkout
       - run: go get -v -t -d ./...
       - run: go get github.com/golang/lint/golint
+      - run:
+          name: test
+          command: |
+            go test -v -coverprofile c.out ./...
