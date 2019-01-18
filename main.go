@@ -44,7 +44,7 @@ type Salmon struct {
 	} `json:"result"`
 }
 
-// GetSlamons can get Salmon-Run informations
+// GetSalmons can get Salmon-Run informations
 func GetSalmons(context *cli.Context) {
 	resp, err := http.Get("https://spla2.yuu26.com/coop/schedule")
 	if err != nil {
