@@ -11,6 +11,7 @@ import (
 	"github.com/urfave/cli"
 )
 
+// Ika is Battle struct
 type Ika struct {
 	Result struct {
 		Regular []struct {
@@ -29,6 +30,7 @@ type Ika struct {
 	} `json:"result"`
 }
 
+// Salmon is SalmonRun struct
 type Salmon struct {
 	Result []struct {
 		StartT int64 `json:"start_t"`
@@ -42,6 +44,7 @@ type Salmon struct {
 	} `json:"result"`
 }
 
+// GetSlamons can get Salmon-Run informations
 func GetSalmons(context *cli.Context) {
 	resp, err := http.Get("https://spla2.yuu26.com/coop/schedule")
 	if err != nil {
@@ -77,6 +80,7 @@ func GetSalmons(context *cli.Context) {
 	fmt.Println(strings.Join([]string{"ブキ: ", strings.Join(weapons, ", ")}, ""))
 }
 
+// GetBattles can get Splatoon2 Battles informations
 func GetBattles(context *cli.Context) {
 	resp, err := http.Get("https://spla2.yuu26.com/schedule")
 	if err != nil {
