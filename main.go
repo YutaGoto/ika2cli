@@ -134,7 +134,7 @@ func main() {
 		cli.StringFlag{
 			Name:        "mode, m",
 			Value:       "regular",
-			Usage:       "Regular mode or Salmon-run mode",
+			Usage:       "Battles mode or Salmon-run mode",
 			Destination: &mode,
 		},
 		cli.BoolFlag{
