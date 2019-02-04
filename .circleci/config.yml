@@ -14,4 +14,4 @@ jobs:
       - run:
           name: test
           command: |
-            go test
+            go test -v -coverprofile c.out ./...

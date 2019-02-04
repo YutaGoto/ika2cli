@@ -19,5 +19,5 @@ fi
 if [[ "$1" == "test" ]]; then
   echo "#######################"
   echo "# Running Test"
-  go test
+  go test ./... -race
 fi
