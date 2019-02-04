@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/urfave/cli"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 // Ika is Battle struct
@@ -44,8 +44,13 @@ type Salmon struct {
 	} `json:"result"`
 }
 
+var (
+	mode = kingpin.Flag("mode", "Set verbose mode").Short('m').String()
+	next = kingpin.Flag("next", "next terms").Short('n').Bool()
+)
+
 // GetSalmons can get Salmon-Run informations
-func GetSalmons(context *cli.Context) {
+func GetSalmons(next bool) {
 	resp, err := http.Get("https://spla2.yuu26.com/coop/schedule")
 	if err != nil {
 		fmt.Println(err)
@@ -58,7 +63,7 @@ func GetSalmons(context *cli.Context) {
 	}
 
 	var term = 0
-	if context.Bool("next") {
+	if next {
 		term = 1
 	}
 
@@ -81,7 +86,7 @@ func GetSalmons(context *cli.Context) {
 }
 
 // GetBattles can get Splatoon2 Battles informations
-func GetBattles(context *cli.Context) {
+func GetBattles(next bool) {
 	resp, err := http.Get("https://spla2.yuu26.com/schedule")
 	if err != nil {
 		fmt.Println(err)
@@ -95,7 +100,7 @@ func GetBattles(context *cli.Context) {
 	}
 
 	var term = 0
-	if context.Bool("next") {
+	if next {
 		term = 1
 	}
 
@@ -113,38 +118,21 @@ func GetBattles(context *cli.Context) {
 	fmt.Println(strings.Join([]string{"リーグマッチ:", leagueBattleRule, ", ステージ:", leagueBattleMaps}, ""))
 }
 
-func main() {
-	var mode string
-	app := cli.NewApp()
-
-	app.Name = "ika2cli"
-	app.Usage = "Splatoon2のステージ情報を出力するよ"
-	app.Version = "0.2.0"
-
-	app.Action = func(context *cli.Context) error {
-		if mode == "salmon" {
-			GetSalmons(context)
-		} else {
-			GetBattles(context)
-		}
-		return nil
-	}
-
-	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:        "mode, m",
-			Value:       "regular",
-			Usage:       "Battles mode or Salmon-run mode",
-			Destination: &mode,
-		},
-		cli.BoolFlag{
-			Name:  "next, n",
-			Usage: "to show next term",
-		},
-	}
-
-	err := app.Run(os.Args)
+func run(args []string) {
+	kingpin.Version("0.3.0")
+	_, err := kingpin.CommandLine.Parse(args)
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	if *mode == "salmon" {
+		GetSalmons(*next)
+	} else {
+		GetBattles(*next)
+	}
+
+}
+
+func main() {
+	run(os.Args[1:])
 }

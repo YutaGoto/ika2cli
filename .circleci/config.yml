@@ -9,7 +9,7 @@ jobs:
     steps:
       - run: echo 'export PATH=${GOPATH}/bin/:${PATH}' >> $BASH_ENV
       - checkout
-      - run: go get -v -t -d ./...
+      - run: go get gopkg.in/alecthomas/kingpin.v2
       - run: go get github.com/golang/lint/golint
       - run:
           name: test
