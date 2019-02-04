@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -117,15 +118,18 @@ func GetBattles(next bool) {
 	fmt.Println(strings.Join([]string{"リーグマッチ:", leagueBattleRule, ", ステージ:", leagueBattleMaps}, ""))
 }
 
-func main() {
-	// var mode string
+func run(args []string) {
 	kingpin.Version("0.3.0")
-	// kingpin.Usage("Splatoon2のステージ情報を出力するよ")
-	kingpin.Parse()
+	kingpin.CommandLine.Parse(args)
 
 	if *mode == "salmon" {
 		GetSalmons(*next)
 	} else {
 		GetBattles(*next)
 	}
+
+}
+
+func main() {
+	run(os.Args[1:])
 }
