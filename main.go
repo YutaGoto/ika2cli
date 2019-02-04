@@ -120,7 +120,10 @@ func GetBattles(next bool) {
 
 func run(args []string) {
 	kingpin.Version("0.3.0")
-	kingpin.CommandLine.Parse(args)
+	_, err := kingpin.CommandLine.Parse(args)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	if *mode == "salmon" {
 		GetSalmons(*next)
