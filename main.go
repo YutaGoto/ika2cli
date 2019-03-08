@@ -22,10 +22,14 @@ type Ika struct {
 		Gachi []struct {
 			Rule string   `json:"rule"`
 			Maps []string `json:"maps"`
+			StartT int64    `json:"start_t"`
+			EndT   int64    `json:"end_t"`
 		} `json:"gachi"`
 		League []struct {
 			Rule string   `json:"rule"`
 			Maps []string `json:"maps"`
+			StartT int64    `json:"start_t"`
+			EndT   int64    `json:"end_t"`
 		} `json:"league"`
 	} `json:"result"`
 }
@@ -47,7 +51,76 @@ type Salmon struct {
 var (
 	mode = kingpin.Flag("mode", "Set verbose mode").Short('m').String()
 	next = kingpin.Flag("next", "next terms").Short('n').Bool()
+	search = kingpin.Flag("search", "search mode").Short('s').Bool()
+	league = kingpin.Flag("league", "search next league").Short('l').String()
+	gachi = kingpin.Flag("gachi", "search next gachi").Short('g').String()
 )
+
+func ConvertRuleEn2Ja(name string) string {
+	switch name {
+	case "zone", "Zone":
+		return "ガチエリア"
+	case "rain", "Rain":
+		return "ガチホコバトル"
+	case "clam", "Clam":
+		return "ガチアサリ"
+	case "tower", "Tower":
+		return "ガチヤグラ"
+	default:
+		return name
+	}
+}
+
+// SearchBattles can search next league or gachi type of battle
+func SearchBattles(league string, gachi string) {
+	resp, err := http.Get("https://spla2.yuu26.com/schedule")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	var datetimeLayout = "2006/01/02 15:04"
+
+	var ika Ika
+	if err := json.NewDecoder(resp.Body).Decode(&ika); err != nil {
+		panic(err)
+	}
+
+	if league != "" {
+		var leagues = ika.Result.League
+		var leagueRuleName = ConvertRuleEn2Ja(league)
+		FOR_LEAGUE_RULE_LABEL:
+			for _, l := range leagues {
+				if leagueRuleName == l.Rule {
+					var ruleName = l.Rule
+					var mapName = strings.Join(l.Maps, " ")
+					var startAt = time.Unix(l.StartT, 0).Format(datetimeLayout)
+					var endAt = time.Unix(l.EndT, 0).Format(datetimeLayout)
+					fmt.Println(startAt + " ~ " + endAt)
+					fmt.Println(strings.Join([]string{"リーグマッチ:", ruleName, ", ステージ:", mapName }, ""))
+					break FOR_LEAGUE_RULE_LABEL
+				}
+			}
+	} else if gachi != "" {
+		var gachis = ika.Result.Gachi
+		var gachiRuleName = ConvertRuleEn2Ja(gachi)
+		FOR_GACHI_RULE_LABEL:
+			for _, g := range gachis {
+				if gachiRuleName == g.Rule {
+					var ruleName = g.Rule
+					var mapName = strings.Join(g.Maps, " ")
+					var startAt = time.Unix(g.StartT, 0).Format(datetimeLayout)
+					var endAt = time.Unix(g.EndT, 0).Format(datetimeLayout)
+					fmt.Println(startAt + " ~ " + endAt)
+					fmt.Println(strings.Join([]string{"ガチマッチ:", ruleName, ", ステージ:", mapName }, ""))
+					break FOR_GACHI_RULE_LABEL
+				}
+			}
+	} else {
+		fmt.Println("ガチかリーグを選択してください")
+		return
+	}
+}
 
 // GetSalmons can get Salmon-Run informations
 func GetSalmons(next bool) {
@@ -127,6 +200,8 @@ func run(args []string) {
 
 	if *mode == "salmon" {
 		GetSalmons(*next)
+	} else if *search {
+		SearchBattles(*league, *gachi)
 	} else {
 		GetBattles(*next)
 	}
