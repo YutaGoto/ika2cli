@@ -56,6 +56,7 @@ var (
 	gachi = kingpin.Flag("gachi", "search next gachi").Short('g').String()
 )
 
+// ConvertRuleEn2Ja is translating En to Ja
 func ConvertRuleEn2Ja(name string) string {
 	switch name {
 	case "zone", "Zone":
@@ -71,6 +72,19 @@ func ConvertRuleEn2Ja(name string) string {
 	}
 }
 
+// BuildRule is join rule strings
+func BuildRule(ruleType string, ruleName string, mapName string) string {
+	return strings.Join([]string{ruleType, ":", ruleName, ", ステージ:", mapName }, "")
+}
+
+// BuildDateTime is build start and end
+func BuildDateTime(startT int64, endT int64) string {
+	var datetimeLayout = "2006/01/02 15:04"
+	var startAt = time.Unix(startT, 0).Format(datetimeLayout)
+	var endAt = time.Unix(endT, 0).Format(datetimeLayout)
+	return (startAt + " ~ " + endAt)
+}
+
 // SearchBattles can search next league or gachi type of battle
 func SearchBattles(league string, gachi string) {
 	resp, err := http.Get("https://spla2.yuu26.com/schedule")
@@ -79,7 +93,6 @@ func SearchBattles(league string, gachi string) {
 		return
 	}
 	defer resp.Body.Close()
-	var datetimeLayout = "2006/01/02 15:04"
 
 	var ika Ika
 	if err := json.NewDecoder(resp.Body).Decode(&ika); err != nil {
@@ -92,12 +105,8 @@ func SearchBattles(league string, gachi string) {
 		FOR_LEAGUE_RULE_LABEL:
 			for _, l := range leagues {
 				if leagueRuleName == l.Rule {
-					var ruleName = l.Rule
-					var mapName = strings.Join(l.Maps, " ")
-					var startAt = time.Unix(l.StartT, 0).Format(datetimeLayout)
-					var endAt = time.Unix(l.EndT, 0).Format(datetimeLayout)
-					fmt.Println(startAt + " ~ " + endAt)
-					fmt.Println(strings.Join([]string{"リーグマッチ:", ruleName, ", ステージ:", mapName }, ""))
+					fmt.Println(BuildDateTime(l.StartT, l.EndT))
+					fmt.Println(BuildRule("リーグマッチ", l.Rule, strings.Join(l.Maps, " ")))
 					break FOR_LEAGUE_RULE_LABEL
 				}
 			}
@@ -107,12 +116,8 @@ func SearchBattles(league string, gachi string) {
 		FOR_GACHI_RULE_LABEL:
 			for _, g := range gachis {
 				if gachiRuleName == g.Rule {
-					var ruleName = g.Rule
-					var mapName = strings.Join(g.Maps, " ")
-					var startAt = time.Unix(g.StartT, 0).Format(datetimeLayout)
-					var endAt = time.Unix(g.EndT, 0).Format(datetimeLayout)
-					fmt.Println(startAt + " ~ " + endAt)
-					fmt.Println(strings.Join([]string{"ガチマッチ:", ruleName, ", ステージ:", mapName }, ""))
+					fmt.Println(BuildDateTime(g.StartT, g.EndT))
+					fmt.Println(BuildRule("ガチマッチ", g.Rule, strings.Join(g.Maps, " ")))
 					break FOR_GACHI_RULE_LABEL
 				}
 			}
@@ -177,22 +182,19 @@ func GetBattles(next bool) {
 		term = 1
 	}
 
-	var datetimeLayout = "2006/01/02 15:04"
-	var startAt = time.Unix(ika.Result.Regular[term].StartT, 0).Format(datetimeLayout)
-	var endAt = time.Unix(ika.Result.Regular[term].EndT, 0).Format(datetimeLayout)
 	var regularMaps = strings.Join(ika.Result.Regular[term].Maps, " ")
 	var rankedBattoleRule = ika.Result.Gachi[term].Rule
 	var rankedBattoleMaps = strings.Join(ika.Result.Gachi[term].Maps, " ")
 	var leagueBattleRule = ika.Result.League[term].Rule
 	var leagueBattleMaps = strings.Join(ika.Result.League[term].Maps, " ")
-	fmt.Println(startAt + " ~ " + endAt)
+	fmt.Println(BuildDateTime(ika.Result.Regular[term].StartT, ika.Result.Regular[term].EndT))
 	fmt.Println(strings.Join([]string{"ナワバリバトル", ", ステージ:", regularMaps}, ""))
-	fmt.Println(strings.Join([]string{"ガチマッチ:", rankedBattoleRule, ", ステージ:", rankedBattoleMaps}, ""))
-	fmt.Println(strings.Join([]string{"リーグマッチ:", leagueBattleRule, ", ステージ:", leagueBattleMaps}, ""))
+	fmt.Println(BuildRule("ガチマッチ", rankedBattoleRule, rankedBattoleMaps))
+	fmt.Println(BuildRule("リーグマッチ", leagueBattleRule, leagueBattleMaps))
 }
 
 func run(args []string) {
-	kingpin.Version("0.3.0")
+	kingpin.Version("0.4.0")
 	_, err := kingpin.CommandLine.Parse(args)
 	if err != nil {
 		fmt.Println(err)
