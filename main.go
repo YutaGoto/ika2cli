@@ -148,6 +148,7 @@ func GetSalmons(next bool) {
 	var datetimeLayout = "2006/01/02 15:04"
 	var startAt = time.Unix(salmon.Result[term].StartT, 0).Format(datetimeLayout)
 	var endAt = time.Unix(salmon.Result[term].EndT, 0).Format(datetimeLayout)
+	var hours = time.Unix(salmon.Result[term].EndT, 0).Sub(time.Unix(salmon.Result[term].StartT, 0))
 	var stage = salmon.Result[term].Stage.Name
 	var weapons = []string{}
 	for _, w := range salmon.Result[term].Weapons {
@@ -158,7 +159,7 @@ func GetSalmons(next bool) {
 		opneingText = " 現在開催中!"
 	}
 	fmt.Println("サーモンラン")
-	fmt.Println(startAt + " ~ " + endAt + opneingText)
+	fmt.Println(startAt + " ~ " + endAt + " (" + fmt.Sprintf("%.f", hours.Hours()) + "h)"  + opneingText)
 	fmt.Println(strings.Join([]string{"ステージ:", stage}, ""))
 	fmt.Println(strings.Join([]string{"ブキ: ", strings.Join(weapons, ", ")}, ""))
 }
