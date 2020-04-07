@@ -11,7 +11,3 @@ jobs:
       - checkout
       - run: go get gopkg.in/alecthomas/kingpin.v2
       - run: go get github.com/golang/lint/golint
-      - run:
-          name: test
-          command: |
-            go test -v -coverprofile c.out ./...
